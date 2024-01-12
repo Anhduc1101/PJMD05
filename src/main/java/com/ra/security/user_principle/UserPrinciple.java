@@ -23,6 +23,7 @@ public class UserPrinciple implements UserDetails {
     private Boolean status;
     private int age;
     private Boolean gender;
+    private String address;
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetails build(User user) {
@@ -35,6 +36,7 @@ public class UserPrinciple implements UserDetails {
                 status(user.getStatus()).
                 age(user.getAge()).
                 gender(user.getGender()).
+                address(user.getAddress()).
                 authorities(user.getRoles().stream().map(item -> new SimpleGrantedAuthority(item.getName())).toList()).build();
     }
 

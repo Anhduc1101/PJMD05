@@ -34,7 +34,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.
                 csrf(AbstractHttpConfigurer::disable).authenticationProvider(authenticationProvider()).authorizeHttpRequests((auth) ->
-                        auth.requestMatchers( "/v1/auth/**","/uploads/**","/v1/products/**","/v1/categories/**","/v1/*").permitAll()
+                        auth.requestMatchers( "/v1/auth/**","/v1/uploads/**","/v1/products/**","/v1/categories/**","/*").permitAll()
                                 .requestMatchers("/v1/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers("/v1/user/**").hasAuthority("USER")
                                 .anyRequest().authenticated()

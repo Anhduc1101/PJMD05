@@ -31,4 +31,7 @@ public class Product {
     @OneToMany(mappedBy = "product",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<OrderDetail> orderDetails;
+
+    @OneToOne(mappedBy = "product",fetch = FetchType.EAGER)
+    private CartItem cartItem;
 }

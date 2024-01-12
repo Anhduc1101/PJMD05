@@ -54,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductResponseDTO> searchByName(Pageable pageable, String name) {
-        Page<Product> productPage=productRepository.findAllByProductNameContainingIgnoreCase(pageable, name);
+        Page<Product> productPage = productRepository.findAllByProductNameContainingIgnoreCase(pageable, name);
         return productPage.map(ProductResponseDTO::new);
     }
 
@@ -69,36 +69,47 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDTO saveOrUpdate(ProductRequestDTO productRequestDTO) throws CustomException {
         Product newPro;
-        if (productRequestDTO.getId()==null){
-            if (productRepository.existsByProductName(productRequestDTO.getProductName())){
-                throw new CustomException("Product name had been exist");
-            }
-            newPro=new Product();
-        }else {
-            newPro=productRepository.findById(productRequestDTO.getId()).orElse(null);
+        if (productRepository.existsByProductName(productRequestDTO.getProductName())) {
+            throw new CustomException("Product name had been exist");
         }
+        if (productRequestDTO.getId() == null) {
+            newPro = new Product();
             newPro.setProductName(productRequestDTO.getProductName());
             newPro.setStatus(productRequestDTO.getStatus());
             newPro.setPrice(productRequestDTO.getPrice());
-//            String fileName = uploadService.uploadImage(productRequestDTO.getFile());
-//            newPro.setImg(fileName);
-//            Category category = categoryRepository.findById(productRequestDTO.getCategoryId()).orElse(null);
-//            newPro.setCategory(category);
-//        newPro.setOrderDetails(productRequestDTO.getOrderDetails());
-        MultipartFile file = productRequestDTO.getFile();
-        if (file != null && !file.isEmpty()) {
-            // Gọi phương thức uploadImage để lưu file và nhận lại tên file đã lưu
-            String fileName = uploadService.uploadImage(file);
-            newPro.setImg(fileName);
-        }
 
-        Long categoryId = productRequestDTO.getCategoryId();
-        if (categoryId != null) {
-            // Tìm category dựa trên categoryId và gán vào sản phẩm
-            Category category = categoryRepository.findById(categoryId).orElse(null);
+//            upload file
+            if (productRequestDTO.getFile() != null && productRequestDTO.getFile().getSize() > 0) {
+                String fileName = uploadService.uploadImage(productRequestDTO.getFile());
+                newPro.setImg(fileName);
+            }
+
+//            lay category theo caregoryId tu requestDTO
+            Category category = categoryRepository.findById(productRequestDTO.getCategoryId()).orElse(null);
+
+//            set lai category cho product
             newPro.setCategory(category);
+            productRepository.save(newPro);
+            return new ProductResponseDTO(newPro);
+
+        } else {
+            ProductResponseDTO productResponseDTO = findById(productRequestDTO.getId());
+            String fileName;
+            if (productRequestDTO.getFile() != null && !productRequestDTO.getFile().isEmpty()) {
+                fileName = uploadService.uploadImage(productRequestDTO.getFile());
+            } else {
+                fileName = productResponseDTO.getImg();
+            }
+            Category category = categoryRepository.findById(productRequestDTO.getCategoryId()).orElse(null);
+            Product product = productRepository.save(Product.builder()
+                    .id(productResponseDTO.getId())
+                    .productName(productRequestDTO.getProductName())
+                    .price(productRequestDTO.getPrice())
+                    .status(productRequestDTO.getStatus())
+                    .img(fileName)
+                    .category(category)
+                    .build());
+           return new ProductResponseDTO(product);
         }
-        productRepository.save(newPro);
-        return new ProductResponseDTO(newPro);
     }
 }

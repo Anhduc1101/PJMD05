@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -23,6 +24,7 @@ public class Orders {
     private float total;
     @Column(columnDefinition = "int default 1")
     private int status=1;
+    private Date createAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id",referencedColumnName = "id")

@@ -20,7 +20,7 @@ public class UploadServiceImpl implements UploadService {
         String fileName = file.getOriginalFilename();
         try {
             FileCopyUtils.copy(file.getBytes(), new File(pathUpload + fileName));
-            return "http://localhost:" + port + "/v1/" + fileName;
+            return "http://localhost:" + port + "/" + fileName;
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }

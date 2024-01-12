@@ -15,8 +15,6 @@ public interface ProductService {
     void delete(Long id);
     ProductResponseDTO findById(Long id);
 
-
-
     Page<ProductResponseDTO> getAll(Pageable pageable);
 
     Page<ProductResponseDTO> searchByName(Pageable pageable, String name);

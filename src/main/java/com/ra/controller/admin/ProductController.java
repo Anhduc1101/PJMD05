@@ -25,7 +25,22 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/products/sort+pagination+search")
-    public ResponseEntity<Page<ProductResponseDTO>> getProducts(@RequestParam(name = "page", defaultValue = "0") int page,
+    public ResponseEntity<Page<ProductResponseDTO>> getListProducts(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                                @RequestParam(name = "size", defaultValue = "5") int size,
+                                                                @RequestParam(name = "sort", defaultValue = "id") String sort,
+                                                                @RequestParam(name = "order", defaultValue = "asc") String order) {
+        Pageable pageable;
+        if (order.equals("asc")) {
+            pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+        }
+        Page<ProductResponseDTO> productResponseDTOS = productService.getAll(pageable);
+        return new ResponseEntity<>(productResponseDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping("/products/search")
+    public ResponseEntity<Page<ProductResponseDTO>> search(@RequestParam(name = "page", defaultValue = "0") int page,
                                                                 @RequestParam(name = "size", defaultValue = "5") int size,
                                                                 @RequestParam(name = "sort", defaultValue = "id") String sort,
                                                                 @RequestParam(name = "order", defaultValue = "asc") String order,
@@ -68,23 +83,13 @@ public class ProductController {
     }
 
     @PutMapping("/products/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable("id") Long id,@RequestBody ProductRequestDTO productRequestDTO) throws CustomException {
+    public ResponseEntity<?> updateProduct(@PathVariable("id") Long id,@ModelAttribute ProductRequestDTO productRequestDTO) throws CustomException {
         ProductResponseDTO newPro=productService.findById(id);
         productRequestDTO.setId(newPro.getId());
         ProductResponseDTO updatePro=productService.saveOrUpdate(productRequestDTO);
         return new ResponseEntity<>(updatePro,HttpStatus.OK);
     }
 
-//    @PutMapping("/products/{id}")
-//    public ResponseEntity<?> updateProduct(@PathVariable("id") Long id, @RequestParam(name = "productName") String name,
-//                                           @RequestParam(name = "file") MultipartFile file,
-//                                           @RequestBody ProductRequestDTO productRequestDTO) throws CustomException {
-//
-//        ProductResponseDTO newPro = productService.findById(id);
-//        productRequestDTO.setId(newPro.getId());
-//        ProductResponseDTO updatePro = productService.saveOrUpdate(productRequestDTO);
-//        return new ResponseEntity<>(updatePro, HttpStatus.OK);
-//    }
 
     @PatchMapping("/products/{id}")
     public ResponseEntity<?> changeProductStatus(@PathVariable("id") Long id) {

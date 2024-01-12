@@ -24,10 +24,10 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping("/categories/sort+pagination")
-    public ResponseEntity<Page<Category>> getCategories(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                        @RequestParam(name = "size", defaultValue = "5") int size,
-                                                        @RequestParam(name = "sort", defaultValue = "id") String sort,
-                                                        @RequestParam(name = "order", defaultValue = "asc") String order) {
+    public ResponseEntity<Page<Category>> getListCategories(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                            @RequestParam(name = "size", defaultValue = "5") int size,
+                                                            @RequestParam(name = "sort", defaultValue = "id") String sort,
+                                                            @RequestParam(name = "order", defaultValue = "asc") String order) {
         Pageable pageable;
         if (order.equals("asc")) {
             pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
@@ -35,6 +35,22 @@ public class CategoryController {
             pageable = PageRequest.of(page, size, Sort.by(sort).descending());
         }
         Page<Category> categoryPage = categoryService.getAll(pageable);
+        return new ResponseEntity<>(categoryPage, HttpStatus.OK);
+    }
+
+    @GetMapping("/categories/search")
+    public ResponseEntity<Page<Category>> search(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                 @RequestParam(name = "size", defaultValue = "5") int size,
+                                                 @RequestParam(name = "sort", defaultValue = "id") String sort,
+                                                 @RequestParam(name = "order", defaultValue = "asc") String order,
+                                                 @RequestParam(name = "search") String search) {
+        Pageable pageable;
+        if (order.equals("asc")) {
+            pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+        }
+        Page<Category> categoryPage = categoryService.searchByName(pageable, search);
         return new ResponseEntity<>(categoryPage, HttpStatus.OK);
     }
 

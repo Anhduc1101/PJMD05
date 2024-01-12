@@ -1,6 +1,7 @@
 package com.ra.controller;
 
 import com.ra.model.dto.request.UserRequestDTO;
+import com.ra.model.dto.response.UserLoginResponseDTO;
 import com.ra.model.dto.response.UserResponseDTO;
 import com.ra.model.entity.User;
 import com.ra.service.user.UserService;
@@ -19,8 +20,8 @@ public class AuthController {
     private UserService userService;
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserRequestDTO userRequestDTO){
-        UserResponseDTO userResponseDTO = userService.login(userRequestDTO);
-    return new ResponseEntity<>(userResponseDTO, HttpStatus.OK);
+        UserLoginResponseDTO userLoginResponseDTO = userService.login(userRequestDTO);
+    return new ResponseEntity<>(userLoginResponseDTO, HttpStatus.OK);
     }
 
     @PostMapping("/register")
