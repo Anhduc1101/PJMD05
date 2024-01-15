@@ -11,7 +11,6 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@Data
 @Entity
 public class Role {
     @Id

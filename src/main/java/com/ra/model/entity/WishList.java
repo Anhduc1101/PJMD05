@@ -1,25 +1,20 @@
 package com.ra.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
 
 import java.util.Set;
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@Builder
+
 @Entity
-public class Cart {
+public class WishList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private Long Id;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId",referencedColumnName = "id")
     private User user;
-
-    @OneToMany(mappedBy = "cart",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
-    private Set<CartItem> cartItem;
+    @OneToMany(mappedBy = "wishList",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<Product> products;
 
 }

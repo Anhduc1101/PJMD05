@@ -12,7 +12,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-@Data
 @Entity
 public class Orders {
     @Id
@@ -25,11 +24,9 @@ public class Orders {
     @Column(columnDefinition = "int default 1")
     private int status=1;
     private Date createAt;
-
     @ManyToOne
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
-
     @OneToMany(mappedBy = "orders")
     @JsonIgnore
     private Set<OrderDetail> orderDetails;

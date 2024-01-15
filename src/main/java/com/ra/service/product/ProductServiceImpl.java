@@ -67,6 +67,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductResponseDTO> getProductListByCategoryId(Long id) {
+        return productRepository.findProductsByCategoryId(id);
+    }
+
+    @Override
     public ProductResponseDTO saveOrUpdate(ProductRequestDTO productRequestDTO) throws CustomException {
         Product newPro;
         if (productRepository.existsByProductName(productRequestDTO.getProductName())) {

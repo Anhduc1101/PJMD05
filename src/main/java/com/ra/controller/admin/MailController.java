@@ -1,4 +1,4 @@
-package com.ra.controller;
+package com.ra.controller.admin;
 
 import com.ra.service.mail.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;

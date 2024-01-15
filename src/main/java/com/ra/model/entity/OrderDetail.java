@@ -8,7 +8,6 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@Data
 @Entity
 public class OrderDetail {
     @Id

@@ -1,8 +1,9 @@
 package com.ra.model.dto.response;
 
-import com.ra.model.entity.Role;
+import com.ra.model.entity.*;
 import jakarta.persistence.Column;
-import com.ra.model.entity.User;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToOne;
 import lombok.*;
 
 import java.util.Set;
@@ -25,6 +26,9 @@ public class UserResponseDTO {
     private int age;
     private String address;
     private Set<String> roles;
+    private Set<Orders> orders;
+    private Cart cart;
+    private WishList wishList;
     private String token;
 
 
@@ -38,6 +42,9 @@ public class UserResponseDTO {
         this.phone=user.getPhone();
         this.age= user.getAge();
         this.address=user.getAddress();
+        this.orders=user.getOrders();
+        this.cart=user.getCart();
+        this.wishList= user.getWishList();
         this.roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
     }
 }

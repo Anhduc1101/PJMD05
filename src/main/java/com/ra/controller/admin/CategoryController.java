@@ -23,6 +23,12 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    @GetMapping("/categories")
+    public ResponseEntity<?> getListCategories() {
+        List<CategoryResponseDTO> categoryResponseDTOList=categoryService.findAll();
+        return new ResponseEntity<>(categoryResponseDTOList, HttpStatus.OK);
+    }
+
     @GetMapping("/categories/sort+pagination")
     public ResponseEntity<Page<Category>> getListCategories(@RequestParam(name = "page", defaultValue = "0") int page,
                                                             @RequestParam(name = "size", defaultValue = "5") int size,

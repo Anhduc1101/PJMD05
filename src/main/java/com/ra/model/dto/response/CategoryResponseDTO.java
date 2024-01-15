@@ -1,7 +1,6 @@
 package com.ra.model.dto.response;
 
 import com.ra.model.entity.Category;
-import com.ra.security.user_principle.UserPrinciple;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

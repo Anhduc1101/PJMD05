@@ -4,8 +4,10 @@ import com.ra.exception.CustomException;
 import com.ra.model.dto.request.UserRequestDTO;
 import com.ra.model.dto.response.UserLoginResponseDTO;
 import com.ra.model.dto.response.UserResponseDTO;
+import com.ra.model.entity.Cart;
 import com.ra.model.entity.Role;
 import com.ra.model.entity.User;
+import com.ra.model.entity.WishList;
 import com.ra.repository.UserRepository;
 import com.ra.security.jwt.JWTProvider;
 import com.ra.security.user_principle.UserPrinciple;
@@ -65,6 +67,10 @@ public class UserServiceImpl implements UserService {
         newUser.setPhone(user.getPhone());
         newUser.setAge(user.getAge());
         newUser.setRoles(roles);
+        newUser.setAddress(user.getAddress());
+        newUser.setOrders(user.getOrders());
+        newUser.setCart(user.getCart());
+        newUser.setWishList(user.getWishList());
         return userRepository.save(newUser);
     }
 
@@ -132,14 +138,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO addNewRole(UserRequestDTO userRequestDTO) throws CustomException {
+    public UserResponseDTO addNewRole(UserRequestDTO userRequestDTO, Long id) throws CustomException {
         UserResponseDTO userResponseDTO = findById(userRequestDTO.getId());
-        if (userResponseDTO.getRoles().contains("ADMIN")) {
-            throw new CustomException("This Account can not be change !!!");
+        User user = userRepository.findById(id).orElse(null);
+        if (userResponseDTO.getRoles().stream().anyMatch(role -> role.equals("USER"))) {
+            throw new CustomException("This account can not add new role!!!");
         }
-        if (userResponseDTO.getRoles().size() == 1 && userResponseDTO.getRoles().contains("USER")) {
+        if (userResponseDTO.getRoles().stream().anyMatch(role -> role.equals("ADMIN") || role.equals("SUB_ADMIN"))) {
             Set<Role> roles = new HashSet<>();
-            roles.add(roleService.findByRoleName("SUB_ADMIN"));
+////            roles.add(roleService.findByRoleName("SUB_ADMIN"));
+            userResponseDTO.setRoles(userRequestDTO.getRoles());
+
 
         }
         return null;

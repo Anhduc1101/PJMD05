@@ -11,7 +11,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-@Data
 @Entity
 public class Product {
     @Id
@@ -34,4 +33,8 @@ public class Product {
 
     @OneToOne(mappedBy = "product",fetch = FetchType.EAGER)
     private CartItem cartItem;
+
+    @ManyToOne
+    @JoinColumn(name = "wishListId",referencedColumnName = "id")
+    private WishList wishList;
 }

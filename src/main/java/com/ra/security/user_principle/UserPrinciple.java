@@ -1,13 +1,20 @@
 package com.ra.security.user_principle;
 
+import com.ra.model.entity.Cart;
+import com.ra.model.entity.Orders;
 import com.ra.model.entity.User;
+import com.ra.model.entity.WishList;
 import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToOne;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,6 +31,9 @@ public class UserPrinciple implements UserDetails {
     private int age;
     private Boolean gender;
     private String address;
+    private Set<Orders> orders=new HashSet<>();
+    private Cart cart ;
+    private WishList wishList;
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetails build(User user) {
@@ -37,9 +47,15 @@ public class UserPrinciple implements UserDetails {
                 age(user.getAge()).
                 gender(user.getGender()).
                 address(user.getAddress()).
+                orders(user.getOrders()).
+                cart(user.getCart()).
+                wishList(user.getWishList()).
                 authorities(user.getRoles().stream().map(item -> new SimpleGrantedAuthority(item.getName())).toList()).build();
     }
 
+//    public Long getUserId(){
+//        return getUserId();
+//    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

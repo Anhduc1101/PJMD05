@@ -3,6 +3,7 @@ package com.ra.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -10,7 +11,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-@Data
 @Entity
 public class User {
     @Id
@@ -30,9 +30,10 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Orders> orders;
-
     @OneToOne(mappedBy = "user",fetch = FetchType.EAGER)
-    private Cart cart;
+    private Cart cart ;
+    @OneToOne(mappedBy = "user",fetch = FetchType.EAGER)
+    private WishList wishList;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",

@@ -19,6 +19,8 @@ public interface UserService {
     void changeStatus(Long id);
     void changeRole(Long id) throws CustomException;
     UserResponseDTO findById(Long id);
-    UserResponseDTO addNewRole(UserRequestDTO userRequestDTO) throws CustomException;
+    UserResponseDTO addNewRole(UserRequestDTO userRequestDTO,Long id) throws CustomException;
 //    UserResponseDTO deleteRole(UserRequestDTO userRequestDTO) throws CustomException;
+
 }
+

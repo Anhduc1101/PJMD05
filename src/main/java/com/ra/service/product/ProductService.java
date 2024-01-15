@@ -21,4 +21,6 @@ public interface ProductService {
 
     void changeStatus(Long id);
 
+    List<ProductResponseDTO> getProductListByCategoryId(Long id);
+
 }

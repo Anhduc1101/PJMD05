@@ -17,4 +17,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("update User u set u.status = case when u.status = true then false else true end where u.id=?1")
     void changeStatus(Long id);
+
+    User existsByUserNameContainingIgnoreCase(String name);
+    User existsByEmailContainingIgnoreCase(String name);
+    User existsByPasswordContainingIgnoreCase(String name);
 }

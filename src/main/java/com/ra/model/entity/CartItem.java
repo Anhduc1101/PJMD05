@@ -1,14 +1,12 @@
 package com.ra.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 public class CartItem {
@@ -18,10 +16,8 @@ public class CartItem {
     @ManyToOne
     @JoinColumn(name = "cartId",referencedColumnName = "id")
     private Cart cart;
-
     private int quantity;
     private float price;
-
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "productId",referencedColumnName = "id")
     private Product product;

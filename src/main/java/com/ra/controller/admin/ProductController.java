@@ -2,6 +2,7 @@ package com.ra.controller.admin;
 
 import com.ra.exception.CustomException;
 import com.ra.model.dto.request.ProductRequestDTO;
+import com.ra.model.dto.response.CategoryResponseDTO;
 import com.ra.model.dto.response.ProductResponseDTO;
 import com.ra.model.entity.Category;
 import com.ra.model.entity.Product;
@@ -24,7 +25,13 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/products/sort+pagination+search")
+    @GetMapping("/products")
+    public ResponseEntity<?> getListProducts() {
+        List<ProductResponseDTO> productResponseDTOList=productService.getAll();
+        return new ResponseEntity<>(productResponseDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping("/products/sort+pagination")
     public ResponseEntity<Page<ProductResponseDTO>> getListProducts(@RequestParam(name = "page", defaultValue = "0") int page,
                                                                 @RequestParam(name = "size", defaultValue = "5") int size,
                                                                 @RequestParam(name = "sort", defaultValue = "id") String sort,

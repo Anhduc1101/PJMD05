@@ -10,12 +10,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Override
+    public List<CategoryResponseDTO> findAll() {
+        List<Category> categoryList=categoryRepository.findAll();
+        return categoryList.stream().map(CategoryResponseDTO::new).toList();
+    }
 
     @Override
     public Page<Category> getAll(Pageable pageable) {
@@ -69,4 +76,5 @@ public class CategoryServiceImpl implements CategoryService {
             categoryRepository.changeStatus(id);
         }
     }
+
 }
