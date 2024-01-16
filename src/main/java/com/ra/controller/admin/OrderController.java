@@ -1,8 +1,6 @@
 package com.ra.controller.admin;
 
-import com.ra.model.dto.request.OrdersRequestDTO;
 import com.ra.model.dto.response.OrdersResponseDTO;
-import com.ra.model.dto.response.ProductResponseDTO;
 import com.ra.model.entity.Orders;
 import com.ra.repository.OrdersRepository;
 import com.ra.service.orders.OrdersService;
@@ -18,6 +16,8 @@ import java.util.List;
 public class OrderController {
     @Autowired
     private OrdersService ordersService;
+    @Autowired
+    private OrdersRepository ordersRepository;
     @GetMapping("/orders")
     public ResponseEntity<?> getAllOrders(){
         List<OrdersResponseDTO> ordersResponseDTOList=ordersService.findAll();
@@ -42,5 +42,11 @@ public class OrderController {
         }catch (Exception e){
             return new ResponseEntity<>("Please insert valid number !!!",HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/orders/orderStatus")
+    public ResponseEntity<?> getListOrdersByStatus (@RequestParam int status){
+        List<Orders> ordersList=ordersService.getListOrderByStatus(status);
+        return new ResponseEntity<>(ordersList,HttpStatus.OK);
     }
 }

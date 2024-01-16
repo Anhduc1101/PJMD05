@@ -25,7 +25,8 @@ public interface OrdersService {
 
     Page<OrdersResponseDTO> getAll(Pageable pageable);
 
-    //    void createOrder(Orders orders);
     void changeStatus(Long id,int status);
+
+    List<Orders> getListOrderByStatus(int status);
 
 }

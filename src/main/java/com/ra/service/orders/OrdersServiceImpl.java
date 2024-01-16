@@ -8,6 +8,7 @@ import com.ra.model.entity.Orders;
 import com.ra.model.entity.User;
 import com.ra.repository.OrdersRepository;
 import com.ra.service.user.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -68,9 +69,15 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public void changeStatus(Long id,int status) {
-       Orders orders=ordersRepository.findById(id).orElse(null);
+    public void changeStatus(Long id, int status) {
+        Orders orders = ordersRepository.findById(id).orElse(null);
         orders.setStatus(status);
         ordersRepository.save(orders);
+    }
+
+
+    @Override
+    public List<Orders> getListOrderByStatus(int status) {
+        return ordersRepository.findAllByStatus(status);
     }
 }

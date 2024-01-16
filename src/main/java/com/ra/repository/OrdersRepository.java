@@ -7,11 +7,16 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 @Transactional
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders,Long> {
-//    @Modifying
-//    @Query("update Orders o set o.status = :status where o.id = :id")
-//    void changeStatus(@Param("id") Long id, @Param("newStatus") int status);
+
+    @Modifying
+    @Query("SELECT o FROM Orders o WHERE o.status = :status")
+    List<Orders> getAllByStatus(@Param("status") int status);
+
+    Orders findOrdersByStatus(int status);
+    List<Orders> findAllByStatus(int status);
 }
