@@ -2,6 +2,7 @@ package com.ra.service.user;
 
 import com.ra.exception.CustomException;
 import com.ra.model.dto.request.UserRequestDTO;
+import com.ra.model.dto.response.UserInfoResponseDTO;
 import com.ra.model.dto.response.UserLoginResponseDTO;
 import com.ra.model.dto.response.UserResponseDTO;
 import com.ra.model.entity.Cart;
@@ -138,38 +139,54 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserInfoResponseDTO findByUserId(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        return userOptional.map(UserInfoResponseDTO::new).orElse(null);
+    }
+
+    @Override
     public UserResponseDTO addNewRole(UserRequestDTO userRequestDTO, Long id) throws CustomException {
         UserResponseDTO userResponseDTO = findById(userRequestDTO.getId());
         User user = userRepository.findById(id).orElse(null);
-        if (userResponseDTO.getRoles().stream().anyMatch(role -> role.equals("USER"))) {
+        if (userResponseDTO.getRoles().stream().anyMatch(role -> role.equals("ADMIN"))) {
             throw new CustomException("This account can not add new role!!!");
         }
         if (userResponseDTO.getRoles().stream().anyMatch(role -> role.equals("ADMIN") || role.equals("SUB_ADMIN"))) {
-            Set<Role> roles = new HashSet<>();
-////            roles.add(roleService.findByRoleName("SUB_ADMIN"));
-            userResponseDTO.setRoles(userRequestDTO.getRoles());
-
-
+            Set<Role> roles = userResponseDTO.getRoles().stream()
+                    .map(role -> roleService.findByRoleName(role))
+                    .collect(Collectors.toSet());
+            user.setRoles(roles);
+            userRepository.save(user);
+            userResponseDTO.setRoles(roles.stream()
+                    .map(Role::getName)
+                    .collect(Collectors.toSet()));
         }
-        return null;
+        return userResponseDTO;
     }
 
-//    @Override
-//    public UserResponseDTO deleteRole(UserRequestDTO userRequestDTO) throws CustomException {
-//        UserResponseDTO userResponseDTO = findById(userRequestDTO.getId());
-//        if (userResponseDTO.getRoles().equals("ADMIN")) {
-//            throw new CustomException("This Account can not be change !!!");
-//        }
-//        if (userResponseDTO.getRoles().size() == 1 && userResponseDTO.getRoles().equals("USER")) {
-//            throw new CustomException("This account does not have full permission");
-//        }
-//        if (userResponseDTO.getRoles().size() < 2) {
-//            throw new CustomException("This account has only unique role, can not be delete role!!!");
-//        }
-//        if (userResponseDTO.getRoles().size() > 2 && !userResponseDTO.getRoles().equals("ADMIN")) {
-//            Set<Role> roles=new HashSet<>();
-//            roles.add(roleService.findByRoleName("SUB_ADMIN"));
-//        }
-//        return null;
-//    }
+    @Override
+    public boolean checkPass(User user, String password) {
+        return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    @Override
+    public void changePassword(User user, String confirmPassword) {
+        user.setPassword(passwordEncoder.encode(confirmPassword));
+        userRepository.save(user);
+    }
+
+    @Override
+    public UserResponseDTO save(Long userId,UserRequestDTO userRequestDTO) {
+        User user=userRepository.findById(userId).orElse(null);
+        user.setId(user.getId());
+        user.setAddress(userRequestDTO.getAddress());
+        user.setUserName(userRequestDTO.getUserName());
+        user.setGender(userRequestDTO.getGender());
+        user.setPhone(userRequestDTO.getPhone());
+        user.setEmail(userRequestDTO.getEmail());
+        user.setAge(userRequestDTO.getAge());
+        userRepository.save(user);
+        return new UserResponseDTO(user);
+    }
+
 }

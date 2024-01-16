@@ -10,6 +10,7 @@ import jakarta.persistence.OneToMany;
 import lombok.*;
 
 import java.util.Set;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -20,4 +21,5 @@ public class OrdersRequestDTO {
     private String address;
     private String phone;
     private String note;
+    private int status = 1;
 }

@@ -53,9 +53,6 @@ public class UserPrinciple implements UserDetails {
                 authorities(user.getRoles().stream().map(item -> new SimpleGrantedAuthority(item.getName())).toList()).build();
     }
 
-//    public Long getUserId(){
-//        return getUserId();
-//    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

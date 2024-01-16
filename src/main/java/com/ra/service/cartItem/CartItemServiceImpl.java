@@ -4,6 +4,7 @@ import com.ra.exception.CustomException;
 import com.ra.model.dto.request.CartItemRequestDTO;
 import com.ra.model.dto.response.CartItemResponseDTO;
 import com.ra.model.dto.response.CartResponseDTO;
+import com.ra.model.entity.Cart;
 import com.ra.model.entity.CartItem;
 import com.ra.repository.CartItemRepository;
 import com.ra.service.cart.CartService;
@@ -64,4 +65,9 @@ public class CartItemServiceImpl implements CartItemService {
         }
         return null;
     }
+
+//    @Override
+//    public List<CartItem> findAllCartItemByCartId(Long id) {
+//        return cartItemRepository.findCartItemByCart_Id(id);
+//    }
 }

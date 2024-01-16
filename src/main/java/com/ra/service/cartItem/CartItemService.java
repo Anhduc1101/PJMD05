@@ -20,4 +20,6 @@ public interface CartItemService {
     void deleteAllCartItemByCartId(Long id) throws CustomException;
 
     CartItemResponseDTO save(CartItemRequestDTO cartItemRequestDTO);
+
+//    List<CartItem> findAllCartItemByCartId(Long id);
 }

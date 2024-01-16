@@ -21,4 +21,6 @@ public interface CartService {
 
     void clearAllCartItems();
 
+void placeOrder(User user);
+
 }

@@ -21,7 +21,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @GetMapping("/users")
-    public ResponseEntity<?> getListUser(){
+    public ResponseEntity<?> getUsers(){
         List<UserResponseDTO> userResponseDTOS=userService.findAll();
         return new ResponseEntity<>(userResponseDTOS,HttpStatus.OK);
     }
@@ -79,15 +79,15 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @PostMapping("/users/{id}/add-role")
-//    public ResponseEntity<?> addNewRole(@PathVariable("id")Long id, @ModelAttribute UserRequestDTO userRequestDTO) throws CustomException {
-//        UserResponseDTO userResponseDTO=userService.findById(id);
-//        System.out.println(userResponseDTO);
-//        if (userResponseDTO!=null){
-//            userService.addNewRole(userRequestDTO);
-//            return new ResponseEntity<>(userResponseDTO,HttpStatus.OK);
-//        }
-//        return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
-//    }
+    @PostMapping("/users/{id}/add-role")
+    public ResponseEntity<?> addNewRole(@PathVariable("id")Long id, @ModelAttribute UserRequestDTO userRequestDTO) throws CustomException {
+        UserResponseDTO userResponseDTO=userService.findById(id);
+        System.out.println(userResponseDTO);
+        if (userResponseDTO!=null){
+            userService.addNewRole(userRequestDTO, userRequestDTO.getId());
+            return new ResponseEntity<>(userResponseDTO,HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
+    }
 
 }

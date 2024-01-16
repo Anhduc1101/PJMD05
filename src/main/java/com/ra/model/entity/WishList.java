@@ -12,6 +12,7 @@ public class WishList {
     private Long Id;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId",referencedColumnName = "id")
+    @JsonIgnore
     private User user;
     @OneToMany(mappedBy = "wishList",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
     @JsonIgnore

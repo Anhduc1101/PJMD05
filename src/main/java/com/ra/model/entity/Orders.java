@@ -19,7 +19,7 @@ public class Orders {
     private Long id;
     private String address;
     private String phone;
-    private String note;
+//    private String note;
     private float total;
     @Column(columnDefinition = "int default 1")
     private int status=1;

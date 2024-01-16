@@ -14,4 +14,9 @@ CartItem findByCartAndProduct(Cart cart,Product product);
 
 Boolean existsCartItemByCartAndProduct(Cart cart,Product product);
 CartItem findCartItemById(Long id);
+
+//List<CartItem> findCartItemByCart_Id(Long id);
+
+    List<CartItem> findAllByCart(Cart cart);
+
 }
