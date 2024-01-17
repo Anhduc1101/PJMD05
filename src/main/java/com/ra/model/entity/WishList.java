@@ -10,11 +10,11 @@ public class WishList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId",referencedColumnName = "id")
     @JsonIgnore
     private User user;
-    @OneToMany(mappedBy = "wishList",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "wishList",cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Product> products;
 

@@ -1,5 +1,6 @@
 package com.ra.controller.home;
 
+import com.ra.exception.CustomException;
 import com.ra.model.dto.request.UserRequestDTO;
 import com.ra.model.dto.response.*;
 import com.ra.model.entity.Category;
@@ -38,9 +39,12 @@ public class AuthController {
 
     //    Đăng nhập tài khoản bằng username và password
     @PostMapping("/auth/login")
-    public ResponseEntity<?> login(@RequestBody UserRequestDTO userRequestDTO) {
+    public ResponseEntity<?> login(@RequestBody UserRequestDTO userRequestDTO) throws CustomException {
         UserLoginResponseDTO userLoginResponseDTO = userService.login(userRequestDTO);
+        if (userLoginResponseDTO.getStatus()){
         return new ResponseEntity<>(userLoginResponseDTO, HttpStatus.OK);
+        }
+        throw new CustomException("Your Account had been locked");
     }
 
     //    Danh sách danh mục được bán

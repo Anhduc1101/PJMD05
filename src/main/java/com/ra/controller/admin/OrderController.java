@@ -1,5 +1,6 @@
 package com.ra.controller.admin;
 
+import com.ra.exception.CustomException;
 import com.ra.model.dto.response.OrdersResponseDTO;
 import com.ra.model.entity.Orders;
 import com.ra.repository.OrdersRepository;
@@ -18,35 +19,43 @@ public class OrderController {
     private OrdersService ordersService;
     @Autowired
     private OrdersRepository ordersRepository;
+
+    //    danh sach tat ca don hang
     @GetMapping("/orders")
-    public ResponseEntity<?> getAllOrders(){
-        List<OrdersResponseDTO> ordersResponseDTOList=ordersService.findAll();
+    public ResponseEntity<?> getAllOrders() {
+        List<OrdersResponseDTO> ordersResponseDTOList = ordersService.findAll();
         return new ResponseEntity<>(ordersResponseDTOList, HttpStatus.OK);
     }
 
-    @GetMapping("/orders/{id}")
-    public ResponseEntity<?> getOrderById(@PathVariable("id") Long id){
-        OrdersResponseDTO ordersResponseDTO=ordersService.findById(id);
-        if (ordersResponseDTO!=null){
-            return new ResponseEntity<>(ordersResponseDTO,HttpStatus.OK);
-        }
-        return new ResponseEntity<>("Not found",HttpStatus.NOT_FOUND);
-    }
+//    lay don hang theo id
+//    @GetMapping("/orders/{id}")
+//    public ResponseEntity<?> getOrderById(@PathVariable("id") Long id){
+//        OrdersResponseDTO ordersResponseDTO=ordersService.findById(id);
+//        if (ordersResponseDTO!=null){
+//            return new ResponseEntity<>(ordersResponseDTO,HttpStatus.OK);
+//        }
+//        return new ResponseEntity<>("Not found",HttpStatus.NOT_FOUND);
+//    }
 
+    //    cap nhat trang thai don hang
     @PatchMapping("/orders/{id}")
-    public ResponseEntity<?> changeOrderStatus(@PathVariable("id") String id, @RequestParam int status) {
+    public ResponseEntity<?> changeOrderStatus(@PathVariable("id") Long id, @RequestParam(name = "status") int status)throws CustomException {
         try {
-            Long idOrder= Long.valueOf(id);
-            ordersService.changeStatus(idOrder,status);
-            return new ResponseEntity<>("Status had been changed !!!",HttpStatus.NOT_FOUND);
-        }catch (Exception e){
-            return new ResponseEntity<>("Please insert valid number !!!",HttpStatus.BAD_REQUEST);
+            if (status < 0 || status > 2) {
+                throw new CustomException("Invalid order status");
+            }
+            ordersService.changeStatus(id, status);
+            return new ResponseEntity<>("Status had been changed !!!", HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>("Please insert valid number !!!", HttpStatus.BAD_REQUEST);
         }
     }
 
+    //    lay danh sach don hang theo trang thai
     @GetMapping("/orders/orderStatus")
-    public ResponseEntity<?> getListOrdersByStatus (@RequestParam int status){
-        List<Orders> ordersList=ordersService.getListOrderByStatus(status);
-        return new ResponseEntity<>(ordersList,HttpStatus.OK);
+    public ResponseEntity<?> getListOrdersByStatus(@RequestParam int status) {
+        List<Orders> ordersList = ordersService.getListOrderByStatus(status);
+        return new ResponseEntity<>(ordersList, HttpStatus.OK);
     }
+
 }

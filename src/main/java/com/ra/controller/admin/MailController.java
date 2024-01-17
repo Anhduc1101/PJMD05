@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class MailController {
     @Autowired
     private EmailService emailService;
-    @GetMapping("/test")
-    public ResponseEntity<?> testMail(){
-        emailService.sendMail();
-        return new ResponseEntity<>("OK CHua", HttpStatus.OK);
-    }
+//    @GetMapping("/test")
+//    public ResponseEntity<?> testMail(){
+//        emailService.sendMail();
+//        return new ResponseEntity<>("OK CHua", HttpStatus.OK);
+//    }
 }

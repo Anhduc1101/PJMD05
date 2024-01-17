@@ -11,4 +11,5 @@ public class UserLoginResponseDTO {
     private String userName;
     private Set<String> roles;
     private String token;
+    private Boolean status;
 }

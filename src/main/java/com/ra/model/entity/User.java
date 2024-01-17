@@ -29,17 +29,20 @@ public class User {
     private int age;
     private String address;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Orders> orders;
-    @OneToOne(mappedBy = "user",fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
+    @JsonIgnore
     private Cart cart ;
-    @OneToOne(mappedBy = "user",fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
+    @JsonIgnore
     private WishList wishList;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JsonIgnore
     private Set<Role> roles;
 }

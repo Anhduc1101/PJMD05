@@ -3,10 +3,14 @@ package com.ra.controller.user;
 import com.ra.exception.CustomException;
 import com.ra.model.dto.request.CartItemRequestDTO;
 import com.ra.model.dto.response.CartItemResponseDTO;
+import com.ra.model.dto.response.OrdersResponseDTO;
 import com.ra.model.dto.response.UserResponseDTO;
+import com.ra.model.entity.Cart;
 import com.ra.model.entity.CartItem;
+import com.ra.model.entity.Orders;
 import com.ra.model.entity.User;
 import com.ra.repository.CartItemRepository;
+import com.ra.repository.CartRepository;
 import com.ra.repository.UserRepository;
 import com.ra.security.user_principle.UserDetailService;
 import com.ra.service.cart.CartService;
@@ -37,7 +41,7 @@ public class CartController {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private EmailService emailService;
+    private CartRepository cartRepository;
 
 
     @GetMapping("/shopping-cart")
@@ -54,7 +58,9 @@ public class CartController {
     }
 
     @DeleteMapping("/shopping-cart")
-    public ResponseEntity<?> clearAll() {
+    public ResponseEntity<?> clearAll(Authentication authentication) {
+//        Long userId = userDetailService.getUserIdFromAuthentication(authentication);
+//        User user=userRepository.findById(userId).orElse(null);
         cartService.clearAllCartItems();
         return new ResponseEntity<>("All cart items had been deleted !!!", HttpStatus.OK);
     }
@@ -83,12 +89,15 @@ public class CartController {
     public ResponseEntity<?> checkOut(Authentication authentication) {
         Long userId = userDetailService.getUserIdFromAuthentication(authentication);
         User user=userRepository.findById(userId).orElse(null);
+//        Cart cart=cartRepository.findByUser(user);
        if (!user.getCart().getCartItem().isEmpty()){
         cartService.placeOrder(user);
         cartService.clearAllCartItems();
-//        emailService.sendMail();
+//        cartService.clearAllCartItemsByUser(cart);
         return new ResponseEntity<>("Your order had been placed successfully !!!",HttpStatus.OK);
        }
        return new ResponseEntity<>("Cart blank, can not place order !!!",HttpStatus.BAD_REQUEST);
     }
+
+
 }

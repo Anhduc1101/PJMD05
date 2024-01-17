@@ -22,6 +22,7 @@ public class Cart {
     private User user;
 
     @OneToMany(mappedBy = "cart",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
+    @JsonIgnore
     private Set<CartItem> cartItem;
 
 }

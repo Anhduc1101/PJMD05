@@ -51,7 +51,7 @@ public class AccountController {
             if (!userService.checkPass(user, userChangePassRequestDTO.getPassword())) {
                 return new ResponseEntity<>("Password is incorrect !!!", HttpStatus.BAD_REQUEST);
             }
-            userService.changePassword(user,userChangePassRequestDTO.getConfirmPassword());
+            userService.changePassword(user,userChangePassRequestDTO.getNewPass());
             return new ResponseEntity<>("Password had been changed !!!", HttpStatus.OK);
         }
         return new ResponseEntity<>("Not Found",HttpStatus.NOT_FOUND);
@@ -77,10 +77,10 @@ public class AccountController {
         return new ResponseEntity<>("Not found",HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/sendMail")
-    public ResponseEntity<?> sendMail(){
-        emailService.sendMail();
-        return new ResponseEntity<>("Sent successfully !!!",HttpStatus.OK);
-    }
+//    @GetMapping("/sendMail")
+//    public ResponseEntity<?> sendMail(){
+//        emailService.sendMail();
+//        return new ResponseEntity<>("Sent successfully !!!",HttpStatus.OK);
+//    }
 
 }

@@ -86,6 +86,7 @@ public class UserServiceImpl implements UserService {
                 .token(jwtProvider.generateToken(userPrinciple))
                 .userName(userPrinciple.getUsername())
                 .roles(userPrinciple.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()))
+                .status(userPrinciple.getStatus())
                 .build();
     }
 

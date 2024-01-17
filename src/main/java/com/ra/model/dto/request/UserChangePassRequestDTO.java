@@ -9,5 +9,7 @@ import lombok.*;
 @Builder
 public class UserChangePassRequestDTO {
     private String password;
-    private String ConfirmPassword;
+    private String newPass;
+
+
 }

@@ -37,6 +37,7 @@ public class SecurityConfig {
                         auth.requestMatchers( "/v1/auth/**","/v1/uploads/**","/v1/products/**","/v1/categories/**","/*").permitAll()
                                 .requestMatchers("/v1/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers("/v1/user/**").hasAuthority("USER")
+//                                .requestMatchers("/v1/user/**").hasAuthority("SUB_ADMIN")
                                 .anyRequest().authenticated()
                 ).exceptionHandling(
                         (auth) -> auth

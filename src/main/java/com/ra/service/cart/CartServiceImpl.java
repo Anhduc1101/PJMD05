@@ -5,10 +5,12 @@ import com.ra.model.dto.request.CartItemRequestDTO;
 import com.ra.model.dto.request.CartRequestDTO;
 import com.ra.model.dto.response.CartItemResponseDTO;
 import com.ra.model.dto.response.CartResponseDTO;
+import com.ra.model.dto.response.OrdersResponseDTO;
 import com.ra.model.dto.response.UserResponseDTO;
 import com.ra.model.entity.*;
 import com.ra.repository.*;
 import com.ra.service.cartItem.CartItemService;
+import com.ra.service.mail.EmailService;
 import com.ra.service.orders.OrdersService;
 import com.ra.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,8 @@ public class CartServiceImpl implements CartService {
     private OrdersRepository ordersRepository;
     @Autowired
     private OrderDetailRepository orderDetailRepository;
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public Page<CartResponseDTO> getAll(Pageable pageable) {
@@ -80,9 +84,16 @@ public class CartServiceImpl implements CartService {
         cartItemRepository.save(cartItem);
     }
 
+
     @Override
     public void clearAllCartItems() {
         cartItemRepository.deleteAll();
+    }
+
+    @Override
+    public void clearAllCartItemsByUser(Cart cart) {
+        cart.getCartItem().clear();
+        cartRepository.save(cart);
     }
 
     @Override
@@ -108,6 +119,7 @@ public class CartServiceImpl implements CartService {
         float total = cartItemList.stream().map(cartItem -> cartItem.getPrice() * cartItem.getQuantity()).reduce(Float::sum).orElse(0f);
         orders.setTotal(total);
         ordersRepository.save(orders);
+//        emailService.sendMail(user.getEmail(),new OrdersResponseDTO(orders));
     }
 
 

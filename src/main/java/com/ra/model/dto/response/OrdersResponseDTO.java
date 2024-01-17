@@ -24,7 +24,7 @@ public class OrdersResponseDTO {
     private int status=1;
     private Date createAt;
     private Long userId;
-    private Set<Long> orderDetailsId;
+    private List<OrderDetailResponseDTO> orders;
 
     public OrdersResponseDTO(Orders orders) {
         this.id = orders.getId();
@@ -35,6 +35,6 @@ public class OrdersResponseDTO {
         this.status = orders.getStatus();
         this.createAt = orders.getCreateAt();
         this.userId = orders.getUser().getId();
-        this.orderDetailsId = orders.getOrderDetails().stream().map(OrderDetail::getId).collect(Collectors.toSet());
+        this.orders = orders.getOrderDetails().stream().map((OrderDetailResponseDTO::new)).toList();
     }
 }
