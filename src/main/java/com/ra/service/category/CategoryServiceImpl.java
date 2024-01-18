@@ -5,6 +5,7 @@ import com.ra.model.dto.request.CategoryRequestDTO;
 import com.ra.model.dto.response.CategoryResponseDTO;
 import com.ra.model.entity.Category;
 import com.ra.repository.CategoryRepository;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,14 +50,15 @@ public class CategoryServiceImpl implements CategoryService {
             if (categoryRepository.existsByCategoryName(categoryRequestDTO.getCategoryName())) {
                 throw new CustomException("Category name had been exist!");
             }
+            if (StringUtils.isBlank(categoryRequestDTO.getCategoryName())) {
+                throw new CustomException("Category name must not be blank");
+            }
             newCat = new Category();
-            newCat.setCategoryName(categoryRequestDTO.getCategoryName());
-            newCat.setStatus(categoryRequestDTO.getStatus());
         } else {
             newCat = categoryRepository.findById(categoryRequestDTO.getId()).orElse(null);
-            newCat.setCategoryName(categoryRequestDTO.getCategoryName());
-            newCat.setStatus(categoryRequestDTO.getStatus());
         }
+        newCat.setCategoryName(categoryRequestDTO.getCategoryName());
+        newCat.setStatus(categoryRequestDTO.getStatus());
         categoryRepository.save(newCat);
         return new CategoryResponseDTO(newCat);
     }

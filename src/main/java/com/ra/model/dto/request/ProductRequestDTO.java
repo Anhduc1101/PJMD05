@@ -21,6 +21,6 @@ public class ProductRequestDTO {
     private String productName;
     private Boolean status = true;
     private MultipartFile file;
-    private float price;
+    private Float price;
     private Long categoryId;
 }

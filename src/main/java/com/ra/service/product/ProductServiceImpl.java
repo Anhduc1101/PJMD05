@@ -9,6 +9,7 @@ import com.ra.repository.CategoryRepository;
 import com.ra.repository.ProductRepository;
 import com.ra.service.category.CategoryService;
 import com.ra.service.upload.UploadService;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -77,6 +78,16 @@ public class ProductServiceImpl implements ProductService {
         if (productRepository.existsByProductName(productRequestDTO.getProductName())) {
             throw new CustomException("Product name had been exist");
         }
+// check trường hợp trống trường dữ liệu
+        if (StringUtils.isBlank(productRequestDTO.getProductName()) || productRequestDTO.getPrice() == null || productRequestDTO.getCategoryId() == null) {
+            throw new CustomException("Product name, price, categoryId is required");
+        }
+
+        // check trường hợp trống trường file
+        MultipartFile file = productRequestDTO.getFile();
+        if (file == null || file.isEmpty()) {
+            throw new CustomException("Product image is required");
+        }
         if (productRequestDTO.getId() == null) {
             newPro = new Product();
             newPro.setProductName(productRequestDTO.getProductName());
@@ -114,7 +125,7 @@ public class ProductServiceImpl implements ProductService {
                     .img(fileName)
                     .category(category)
                     .build());
-           return new ProductResponseDTO(product);
+            return new ProductResponseDTO(product);
         }
     }
 }
