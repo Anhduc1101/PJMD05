@@ -20,10 +20,11 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
+
     @GetMapping("/users")
-    public ResponseEntity<?> getUsers(){
-        List<UserResponseDTO> userResponseDTOS=userService.findAll();
-        return new ResponseEntity<>(userResponseDTOS,HttpStatus.OK);
+    public ResponseEntity<?> getUsers() {
+        List<UserResponseDTO> userResponseDTOS = userService.findAll();
+        return new ResponseEntity<>(userResponseDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/users/search")
@@ -58,28 +59,28 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable("id") Long id){
-        UserResponseDTO userResponseDTO=userService.findById(id);
-        if (userResponseDTO!=null){
-            return new ResponseEntity<>(userResponseDTO,HttpStatus.OK);
+    public ResponseEntity<?> getUserById(@PathVariable("id") Long id) {
+        UserResponseDTO userResponseDTO = userService.findById(id);
+        if (userResponseDTO != null) {
+            return new ResponseEntity<>(userResponseDTO, HttpStatus.OK);
         }
-        return new ResponseEntity<>("Not Found",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
     }
 
     @PatchMapping("/users/{id}/change-status")
     public ResponseEntity<?> blockOrUnblock(@PathVariable("id") Long id) throws CustomException {
-        UserResponseDTO userResponseDTO=userService.findById(id);
-        if (userResponseDTO!=null){
-        userService.changeStatus(id);
-        return new ResponseEntity<>(userResponseDTO,HttpStatus.OK);
+        UserResponseDTO userResponseDTO = userService.findById(id);
+        if (userResponseDTO != null) {
+            userService.changeStatus(id);
+            return new ResponseEntity<>("This account's status has been changed !!!", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Not found",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
     }
 
     @PatchMapping("/users/{id}/change-role")
     public ResponseEntity<?> changeRole(@PathVariable("id") Long id) throws CustomException {
         userService.changeRole(id);
-        return new ResponseEntity<>("User' role has been changed !!",HttpStatus.OK);
+        return new ResponseEntity<>("User' role has been changed !!", HttpStatus.OK);
     }
 
 //    @PostMapping("/users/{id}/add-role")

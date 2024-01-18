@@ -105,11 +105,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changeStatus(Long id) throws CustomException {
         UserResponseDTO userResponseDTO = findById(id);
-        if (userResponseDTO.getRoles().contains("ADMIN")){
-            throw new CustomException("This account can not be block !!!");
-        }
-        if (userResponseDTO != null&&!userResponseDTO.getRoles().contains("ADMIN")) {
+        if (!userResponseDTO.getRoles().contains("ADMIN")) {
             userRepository.changeStatus(id);
+        } else {
+            throw new CustomException("This account can not be block !!!");
         }
     }
 

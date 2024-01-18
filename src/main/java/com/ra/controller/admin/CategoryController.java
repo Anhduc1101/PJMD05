@@ -110,8 +110,12 @@ public class CategoryController {
     public ResponseEntity<?> deleteCategory(@PathVariable("id") Long id) {
         CategoryResponseDTO cat = categoryService.findById(id);
         if (cat != null) {
+            Boolean checkProductByCategoryId=categoryService.checkProductByCategoryId(id);
+            if (!checkProductByCategoryId){
             categoryService.delete(id);
             return new ResponseEntity<>("Delete successfully !!!", HttpStatus.OK);
+            }
+            return new ResponseEntity<>("This category currently has products, can not delete it !!!", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
     }

@@ -92,16 +92,22 @@ public class ProductController {
     @PutMapping("/products/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable("id") Long id,@ModelAttribute ProductRequestDTO productRequestDTO) throws CustomException {
         ProductResponseDTO newPro=productService.findById(id);
+        if (newPro!=null){
         productRequestDTO.setId(newPro.getId());
         ProductResponseDTO updatePro=productService.saveOrUpdate(productRequestDTO);
         return new ResponseEntity<>(updatePro,HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Not found",HttpStatus.NOT_FOUND);
     }
 
 
     @PatchMapping("/products/{id}")
     public ResponseEntity<?> changeProductStatus(@PathVariable("id") Long id) {
-        productService.changeStatus(id);
         ProductResponseDTO productResponseDTO = productService.findById(id);
+        if (productResponseDTO!=null){
+        productService.changeStatus(id);
         return new ResponseEntity<>(productResponseDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Not found",HttpStatus.NOT_FOUND);
     }
 }

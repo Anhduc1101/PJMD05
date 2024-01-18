@@ -18,4 +18,6 @@ public interface CategoryService {
     CategoryResponseDTO findById(Long id);
     void changeStatus(Long id);
 
+    Boolean checkProductByCategoryId(Long id);
+
 }

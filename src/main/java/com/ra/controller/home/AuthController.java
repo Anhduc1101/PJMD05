@@ -57,7 +57,8 @@ public class AuthController {
     @GetMapping("/products")
     public ResponseEntity<?> getListProducts() {
         List<ProductResponseDTO> productResponseDTOList = productService.getAll();
-        return new ResponseEntity<>(productResponseDTOList, HttpStatus.OK);
+        List<ProductResponseDTO> filteredProducts = productResponseDTOList.stream().filter(ProductResponseDTO::getStatus).toList();
+        return new ResponseEntity<>(filteredProducts, HttpStatus.OK);
     }
 
 

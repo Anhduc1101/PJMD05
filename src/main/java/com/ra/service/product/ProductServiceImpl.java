@@ -72,23 +72,25 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findProductsByCategoryId(id);
     }
 
+
     @Override
     public ProductResponseDTO saveOrUpdate(ProductRequestDTO productRequestDTO) throws CustomException {
         Product newPro;
         if (productRepository.existsByProductName(productRequestDTO.getProductName())) {
             throw new CustomException("Product name had been exist");
         }
-// check trường hợp trống trường dữ liệu
-        if (StringUtils.isBlank(productRequestDTO.getProductName()) || productRequestDTO.getPrice() == null || productRequestDTO.getCategoryId() == null) {
-            throw new CustomException("Product name, price, categoryId is required");
-        }
 
-        // check trường hợp trống trường file
-        MultipartFile file = productRequestDTO.getFile();
-        if (file == null || file.isEmpty()) {
-            throw new CustomException("Product image is required");
-        }
         if (productRequestDTO.getId() == null) {
+            // check trường hợp trống trường dữ liệu
+            if (StringUtils.isBlank(productRequestDTO.getProductName()) || productRequestDTO.getPrice() == null || productRequestDTO.getCategoryId() == null) {
+                throw new CustomException("Product name, price, categoryId is required");
+            }
+
+            // check trường hợp trống trường file
+            MultipartFile file = productRequestDTO.getFile();
+            if (file == null || file.isEmpty()) {
+                throw new CustomException("Product image is required");
+            }
             newPro = new Product();
             newPro.setProductName(productRequestDTO.getProductName());
             newPro.setStatus(productRequestDTO.getStatus());
@@ -100,7 +102,7 @@ public class ProductServiceImpl implements ProductService {
                 newPro.setImg(fileName);
             }
 
-//            lay category theo caregoryId tu requestDTO
+//            lay category theo categoryId tu requestDTO
             Category category = categoryRepository.findById(productRequestDTO.getCategoryId()).orElse(null);
 
 //            set lai category cho product
@@ -116,7 +118,8 @@ public class ProductServiceImpl implements ProductService {
             } else {
                 fileName = productResponseDTO.getImg();
             }
-            Category category = categoryRepository.findById(productRequestDTO.getCategoryId()).orElse(null);
+
+                Category category = categoryRepository.findById(productRequestDTO.getCategoryId()).orElse(null);
             Product product = productRepository.save(Product.builder()
                     .id(productResponseDTO.getId())
                     .productName(productRequestDTO.getProductName())

@@ -5,6 +5,7 @@ import com.ra.model.dto.request.CategoryRequestDTO;
 import com.ra.model.dto.response.CategoryResponseDTO;
 import com.ra.model.entity.Category;
 import com.ra.repository.CategoryRepository;
+import com.ra.repository.ProductRepository;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,10 +19,12 @@ import java.util.Optional;
 public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public List<CategoryResponseDTO> findAll() {
-        List<Category> categoryList=categoryRepository.findAll();
+        List<Category> categoryList = categoryRepository.findAll();
         return categoryList.stream().map(CategoryResponseDTO::new).toList();
     }
 
@@ -77,6 +80,11 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryResponseDTO != null) {
             categoryRepository.changeStatus(id);
         }
+    }
+
+    @Override
+    public Boolean checkProductByCategoryId(Long id) {
+        return productRepository.existsProductByCategory_Id(id);
     }
 
 }

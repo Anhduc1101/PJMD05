@@ -24,4 +24,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Modifying
     @Query("SELECT p FROM Product p WHERE p.category.id = :id")
     List<ProductResponseDTO> findProductsByCategoryId(@Param("id") Long id);
+
+    Boolean existsProductByCategory_Id(Long id);
 }

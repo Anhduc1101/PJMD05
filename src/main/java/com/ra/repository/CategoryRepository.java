@@ -16,4 +16,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Modifying
     @Query("update Category c set c.status=case when c.status=true then false else true end where c.id=?1")
     void changeStatus(Long id);
+
+
 }

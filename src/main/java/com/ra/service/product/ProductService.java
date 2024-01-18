@@ -23,4 +23,6 @@ public interface ProductService {
 
     List<ProductResponseDTO> getProductListByCategoryId(Long id);
 
+
+
 }
