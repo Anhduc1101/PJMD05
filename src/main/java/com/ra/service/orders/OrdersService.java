@@ -18,12 +18,12 @@ public interface OrdersService {
 //    List<HistoryResponseDTO> findHistory();
     OrdersResponseDTO findById(Long id);
     Page<OrdersResponseDTO> getAll(Pageable pageable);
-    void changeStatus(Long id, int status) throws CustomException;
+    Orders changeStatus(Long id, int status) throws CustomException;
     List<Orders> getListOrderByStatus(int status);
     List<HistoryResponseDTO> getOrders();
     void cancelOrder(Long id) throws CustomException;
 
-
+    Orders placeOrder(User user);
 //    OrdersResponseDTO findOrderById(Long id);
     //    void delete(Long id);
     //    OrdersResponseDTO save(OrdersRequestDTO ordersRequestDTO);

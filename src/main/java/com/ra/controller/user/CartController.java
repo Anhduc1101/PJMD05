@@ -16,6 +16,7 @@ import com.ra.security.user_principle.UserDetailService;
 import com.ra.service.cart.CartService;
 import com.ra.service.cartItem.CartItemService;
 import com.ra.service.mail.EmailService;
+import com.ra.service.orders.OrdersService;
 import com.ra.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,10 @@ public class CartController {
     private UserRepository userRepository;
     @Autowired
     private CartRepository cartRepository;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private OrdersService ordersService;
 
 
     @GetMapping("/shopping-cart")
@@ -59,9 +64,9 @@ public class CartController {
 
     @DeleteMapping("/shopping-cart")
     public ResponseEntity<?> clearAll(Authentication authentication) {
-//        Long userId = userDetailService.getUserIdFromAuthentication(authentication);
+        Long userId = userDetailService.getUserIdFromAuthentication(authentication);
 //        User user=userRepository.findById(userId).orElse(null);
-        cartService.clearAllCartItems();
+        cartService.clearAllCartItemsByCartId(userId);
         return new ResponseEntity<>("All cart items had been deleted !!!", HttpStatus.OK);
     }
 
@@ -86,18 +91,17 @@ public class CartController {
     }
 
     @PostMapping("/shopping-cart/checkout")
-    public ResponseEntity<?> checkOut(Authentication authentication) {
+    public ResponseEntity<?> checkOut(Authentication authentication) throws CustomException {
         Long userId = userDetailService.getUserIdFromAuthentication(authentication);
-        User user=userRepository.findById(userId).orElse(null);
-//        Cart cart=cartRepository.findByUser(user);
-       if (!user.getCart().getCartItem().isEmpty()){
-        cartService.placeOrder(user);
-        cartService.clearAllCartItems();
-//        cartService.clearAllCartItemsByUser(cart);
-        return new ResponseEntity<>("Your order had been placed successfully !!!",HttpStatus.OK);
-       }
-       return new ResponseEntity<>("Cart blank, can not place order !!!",HttpStatus.BAD_REQUEST);
+        User user = userRepository.findById(userId).orElse(null);
+        if (!user.getCart().getCartItem().isEmpty()) {
+            Orders orders = ordersService.placeOrder(user);
+            cartService.clearAllCartItemsByCartId(userId);
+//            cartItemService.deleteAllCartItemByCartId(user.getCart().getId());
+            emailService.sendMail("",orders);
+//            emailService.sendToMail(orders);
+            return new ResponseEntity<>("Your order had been placed successfully !!!", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Cart blank, can not place order !!!", HttpStatus.BAD_REQUEST);
     }
-
-
 }

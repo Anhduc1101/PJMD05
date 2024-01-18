@@ -22,9 +22,11 @@ public interface CartService {
 
     void addToCart(Long id, CartItemRequestDTO cartItemRequestDTO) throws CustomException;
 
-    void clearAllCartItemsByUser(Cart cart);
-    void clearAllCartItems();
 
-    void placeOrder(User user);
+
+//    void clearAllCartItemsByUser(Cart cart);
+    void clearAllCartItemsByCartId(Long id);
+
+
 
 }

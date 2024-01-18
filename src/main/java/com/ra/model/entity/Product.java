@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -31,8 +32,8 @@ public class Product {
     @JsonIgnore
     private Set<OrderDetail> orderDetails;
 
-    @OneToOne(mappedBy = "product",fetch = FetchType.EAGER)
-    private CartItem cartItem;
+    @OneToMany(mappedBy = "product",fetch = FetchType.EAGER)
+    private Set<CartItem> cartItemList;
 
     @ManyToOne
     @JoinColumn(name = "wishListId",referencedColumnName = "id")

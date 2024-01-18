@@ -75,7 +75,7 @@ public class ProductController {
         ProductResponseDTO pro = productService.findById(id);
         if (pro != null) {
             productService.delete(id);
-            return new ResponseEntity<>(pro, HttpStatus.OK);
+            return new ResponseEntity<>("Delete successfully !!!", HttpStatus.OK);
         }
         return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
     }

@@ -21,5 +21,7 @@ public interface CartItemService {
 
     CartItemResponseDTO save(CartItemRequestDTO cartItemRequestDTO);
 
+    void deleteCartItemByCart(Cart cart);
+
 //    List<CartItem> findAllCartItemByCartId(Long id);
 }

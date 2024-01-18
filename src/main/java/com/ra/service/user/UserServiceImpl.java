@@ -103,9 +103,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeStatus(Long id) {
+    public void changeStatus(Long id) throws CustomException {
         UserResponseDTO userResponseDTO = findById(id);
-        if (userResponseDTO != null) {
+        if (userResponseDTO.getRoles().contains("ADMIN")){
+            throw new CustomException("This account can not be block !!!");
+        }
+        if (userResponseDTO != null&&!userResponseDTO.getRoles().contains("ADMIN")) {
             userRepository.changeStatus(id);
         }
     }
@@ -117,8 +120,13 @@ public class UserServiceImpl implements UserService {
         if (userResponseDTO.getRoles().stream().anyMatch(role -> role.equals("ADMIN"))) {
             throw new CustomException("This account can not be change!!!");
         }
-        userResponseDTO.getRoles().removeIf(role -> role.equals("USER"));
-        userResponseDTO.getRoles().add("SUB_ADMIN");
+        if (userResponseDTO.getRoles().stream().anyMatch(role -> role.equals("SUB_ADMIN"))) {
+            userResponseDTO.getRoles().removeIf(role -> role.equals("SUB_ADMIN"));
+            userResponseDTO.getRoles().add("USER");
+        } else {
+            userResponseDTO.getRoles().removeIf(role -> role.equals("USER"));
+            userResponseDTO.getRoles().add("SUB_ADMIN");
+        }
         Set<Role> roles = userResponseDTO.getRoles().stream().map(role -> roleService.findByRoleName(role)).collect(Collectors.toSet());
         userRepository.save(User.builder()
                 .id(userResponseDTO.getId())
@@ -177,8 +185,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO save(Long userId,UserRequestDTO userRequestDTO) {
-        User user=userRepository.findById(userId).orElse(null);
+    public UserResponseDTO save(Long userId, UserRequestDTO userRequestDTO) {
+        User user = userRepository.findById(userId).orElse(null);
         user.setId(user.getId());
         user.setAddress(userRequestDTO.getAddress());
         user.setUserName(userRequestDTO.getUserName());

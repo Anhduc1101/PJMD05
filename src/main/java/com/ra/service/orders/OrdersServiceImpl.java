@@ -5,10 +5,10 @@ import com.ra.model.dto.request.OrdersRequestDTO;
 import com.ra.model.dto.request.UserRequestDTO;
 import com.ra.model.dto.response.HistoryResponseDTO;
 import com.ra.model.dto.response.OrdersResponseDTO;
-import com.ra.model.entity.CartItem;
-import com.ra.model.entity.OrderDetail;
-import com.ra.model.entity.Orders;
-import com.ra.model.entity.User;
+import com.ra.model.entity.*;
+import com.ra.repository.CartItemRepository;
+import com.ra.repository.CartRepository;
+import com.ra.repository.OrderDetailRepository;
 import com.ra.repository.OrdersRepository;
 import com.ra.service.user.UserService;
 import jakarta.transaction.Transactional;
@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,12 @@ import java.util.Optional;
 public class OrdersServiceImpl implements OrdersService {
     @Autowired
     private OrdersRepository ordersRepository;
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
+    @Autowired
+    private CartRepository cartRepository;
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
     @Override
     public List<OrdersResponseDTO> findAll() {
@@ -34,7 +41,7 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public List<OrdersResponseDTO> getListOrderByUser(User user) {
-        List<Orders> ordersList=ordersRepository.findByUser(user);
+        List<Orders> ordersList = ordersRepository.findByUser(user);
         return ordersList.stream().map(OrdersResponseDTO::new).toList();
     }
 
@@ -77,18 +84,19 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public void changeStatus(Long id, int status) throws CustomException {
-        Orders orders=ordersRepository.findById(id).orElse(null);
-        if (orders.getStatus()==0){
+    public Orders changeStatus(Long id, int status) throws CustomException {
+        Orders orders = ordersRepository.findById(id).orElse(null);
+        if (orders.getStatus() == 0) {
             throw new CustomException("Order had been cancel, status can not be change");
         }
-        if (orders.getStatus()==2){
+        if (orders.getStatus() == 2) {
             throw new CustomException("Order had been confirm, status can not be change");
         }
-        if (orders.getStatus()==1){
+        if (orders.getStatus() == 1) {
             orders.setStatus(status);
             ordersRepository.save(orders);
         }
+        return orders;
     }
 
 
@@ -99,23 +107,49 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public List<HistoryResponseDTO> getOrders() {
-        List<Orders> dto=ordersRepository.findAll();
+        List<Orders> dto = ordersRepository.findAll();
         return (List<HistoryResponseDTO>) dto.stream().map(HistoryResponseDTO::new);
     }
 
     @Override
     public void cancelOrder(Long id) throws CustomException {
-        Orders orders=ordersRepository.findById(id).orElse(null);
-        if (orders.getStatus()==0){
+        Orders orders = ordersRepository.findById(id).orElse(null);
+        if (orders.getStatus() == 0) {
             throw new CustomException("Order had been cancel, status can not be change");
         }
-        if (orders.getStatus()==2){
+        if (orders.getStatus() == 2) {
             throw new CustomException("Order had been confirm, status can not be change");
         }
-        if (orders.getStatus()==1){
+        if (orders.getStatus() == 1) {
             orders.setStatus(0);
             ordersRepository.save(orders);
         }
+    }
+
+
+    @Override
+    public Orders placeOrder(User user) {
+        Cart cart = cartRepository.findByUser(user);
+        List<CartItem> cartItemList = cartItemRepository.findAllByCart(cart);
+        Orders orders = new Orders();
+        orders.setUser(user);
+        orders.setCreateAt(new Date());
+        ordersRepository.save(orders);
+
+        for (CartItem item : cartItemList) {
+            OrderDetail od = new OrderDetail();
+            od.setProduct(item.getProduct());
+            od.setQuantity(item.getQuantity());
+            od.setPrice(item.getPrice());
+            od.setOrders(orders);
+            orderDetailRepository.save(od);
+        }
+        orders.setAddress(user.getAddress());
+        orders.setPhone(user.getPhone());
+        float total = cartItemList.stream().map(cartItem -> cartItem.getPrice() * cartItem.getQuantity()).reduce(Float::sum).orElse(0f);
+        orders.setTotal(total);
+        ordersRepository.save(orders);
+        return orders;
     }
 
 

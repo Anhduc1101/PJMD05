@@ -46,7 +46,7 @@ public class CartItemServiceImpl implements CartItemService {
         CartResponseDTO cartResponseDTO = cartService.findById(id);
         if (cartResponseDTO != null) {
             if (!cartResponseDTO.getCartItem().isEmpty()) {
-                cartItemRepository.deleteAllByCart_Id(id);
+                cartItemRepository.deleteCartItemByCartId(id);
             } else {
                 throw new CustomException("Cart is blank");
             }
@@ -64,6 +64,11 @@ public class CartItemServiceImpl implements CartItemService {
             return new CartItemResponseDTO(cartItem);
         }
         return null;
+    }
+
+    @Override
+    public void deleteCartItemByCart(Cart cart) {
+
     }
 
 //    @Override

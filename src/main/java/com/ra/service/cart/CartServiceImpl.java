@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -32,12 +33,6 @@ public class CartServiceImpl implements CartService {
     private UserRepository userRepository;
     @Autowired
     private ProductRepository productRepository;
-    @Autowired
-    private OrdersRepository ordersRepository;
-    @Autowired
-    private OrderDetailRepository orderDetailRepository;
-    @Autowired
-    private EmailService emailService;
 
     @Override
     public Page<CartResponseDTO> getAll(Pageable pageable) {
@@ -64,7 +59,6 @@ public class CartServiceImpl implements CartService {
         User user = userRepository.findById(id).orElseThrow(() -> new CustomException("User is not found"));
         Cart cart = cartRepository.findByUser(user);
         Product product = productRepository.findById(cartItemRequestDTO.getProductId()).orElseThrow(() -> new CustomException("Product is not found"));
-
         if (cart == null) {
             Cart newCart = new Cart();
             newCart.setUser(user);
@@ -84,43 +78,13 @@ public class CartServiceImpl implements CartService {
         cartItemRepository.save(cartItem);
     }
 
-
     @Override
-    public void clearAllCartItems() {
-        cartItemRepository.deleteAll();
-    }
-
-    @Override
-    public void clearAllCartItemsByUser(Cart cart) {
-        cart.getCartItem().clear();
-        cartRepository.save(cart);
-    }
-
-    @Override
-    public void placeOrder(User user) {
+    public void clearAllCartItemsByCartId(Long id) {
+        User user = userRepository.findById(id).orElse(null);
         Cart cart = cartRepository.findByUser(user);
-        List<CartItem> cartItemList = cartItemRepository.findAllByCart(cart);
-        Orders orders = new Orders();
-        orders.setUser(user);
-        orders.setCreateAt(new Date());
-        ordersRepository.save(orders);
-
-        for (CartItem item : cartItemList) {
-            OrderDetail od = new OrderDetail();
-            od.setProduct(item.getProduct());
-            od.setQuantity(item.getQuantity());
-            od.setPrice(item.getPrice());
-            od.setOrders(orders);
-            orderDetailRepository.save(od);
+        if (cart != null) {
+            cartItemRepository.deleteAllByCart_Id(cart.getId());
         }
-        orders.setAddress(user.getAddress());
-//        orders.setNote(orders.getNote());
-        orders.setPhone(user.getPhone());
-        float total = cartItemList.stream().map(cartItem -> cartItem.getPrice() * cartItem.getQuantity()).reduce(Float::sum).orElse(0f);
-        orders.setTotal(total);
-        ordersRepository.save(orders);
-//        emailService.sendMail(user.getEmail(),new OrdersResponseDTO(orders));
     }
-
 
 }

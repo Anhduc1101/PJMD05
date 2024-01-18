@@ -18,7 +18,7 @@ public class CartItem {
     private Cart cart;
     private int quantity;
     private float price;
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "productId",referencedColumnName = "id")
     private Product product;
 

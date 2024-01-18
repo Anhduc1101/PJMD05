@@ -22,7 +22,7 @@ public interface UserService {
 
     Page<UserResponseDTO> searchByName(Pageable pageable, String name);
 
-    void changeStatus(Long id);
+    void changeStatus(Long id) throws CustomException;
 
     void changeRole(Long id) throws CustomException;
 

@@ -111,7 +111,7 @@ public class CategoryController {
         CategoryResponseDTO cat = categoryService.findById(id);
         if (cat != null) {
             categoryService.delete(id);
-            return new ResponseEntity<>(cat, HttpStatus.OK);
+            return new ResponseEntity<>("Delete successfully !!!", HttpStatus.OK);
         }
         return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
     }

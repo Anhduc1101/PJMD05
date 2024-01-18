@@ -67,27 +67,30 @@ public class UserController {
     }
 
     @PatchMapping("/users/{id}/change-status")
-    public ResponseEntity<?> blockOrUnblock(@PathVariable("id") Long id){
-        userService.changeStatus(id);
+    public ResponseEntity<?> blockOrUnblock(@PathVariable("id") Long id) throws CustomException {
         UserResponseDTO userResponseDTO=userService.findById(id);
+        if (userResponseDTO!=null){
+        userService.changeStatus(id);
         return new ResponseEntity<>(userResponseDTO,HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Not found",HttpStatus.NOT_FOUND);
     }
 
     @PatchMapping("/users/{id}/change-role")
     public ResponseEntity<?> changeRole(@PathVariable("id") Long id) throws CustomException {
         userService.changeRole(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("User' role has been changed !!",HttpStatus.OK);
     }
 
-    @PostMapping("/users/{id}/add-role")
-    public ResponseEntity<?> addNewRole(@PathVariable("id")Long id, @ModelAttribute UserRequestDTO userRequestDTO) throws CustomException {
-        UserResponseDTO userResponseDTO=userService.findById(id);
-        System.out.println(userResponseDTO);
-        if (userResponseDTO!=null){
-            userService.addNewRole(userRequestDTO, userRequestDTO.getId());
-            return new ResponseEntity<>(userResponseDTO,HttpStatus.OK);
-        }
-        return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
-    }
+//    @PostMapping("/users/{id}/add-role")
+//    public ResponseEntity<?> addNewRole(@PathVariable("id")Long id, @ModelAttribute UserRequestDTO userRequestDTO) throws CustomException {
+//        UserResponseDTO userResponseDTO=userService.findById(id);
+//        System.out.println(userResponseDTO);
+//        if (userResponseDTO!=null){
+//            userService.addNewRole(userRequestDTO, userRequestDTO.getId());
+//            return new ResponseEntity<>(userResponseDTO,HttpStatus.OK);
+//        }
+//        return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
+//    }
 
 }
